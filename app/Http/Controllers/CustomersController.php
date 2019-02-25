@@ -71,8 +71,6 @@ class CustomersController extends ApiController
             $result =  json_decode($response->getBody()->getContents());
             return redirect('/customers')->with('error', $result->errors);
         }
-
-        return redirect('/customers');
     }
 
     public function calcuateCustomerOrderAverage($customer_id)
@@ -92,14 +90,11 @@ class CustomersController extends ApiController
             $total = 0;
             $average = 0;
 
-            if ($orders = count($response->orders)) {
-
-                foreach ($response->orders as $customer_order) {
-                    $total += $customer_order->total_line_items_price;
-                }
-
-                $average = number_format($total / $orders, 2);
+            foreach ($response->orders as $customer_order) {
+                $total += $customer_order->total_line_items_price;
             }
+
+            $average = number_format($total / $orders, 2);
 
             return view('customer.show')->with(array(
                     'customer' => $customer,
